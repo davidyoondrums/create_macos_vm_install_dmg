@@ -171,9 +171,11 @@ mv /tmp/"$random_disk_image_name".cdr.dmg "$output_directory"/macOS_"$installer_
 
 msg_status "Unmounting macOS installer disk image."
 
-for volume in "/Volumes/$installer_mounted_volume"*; do
-	sudo hdiutil detach "$volume" -force -quiet
-done
+installer_mounted_volume_mount="$(echo $installer_mounted_volume | cut -d / -f 1)"
+ls /Volumes | grep -i "$installer_mounted_volume_mount" | while read ejectimage
+  do
+    sudo hdiutil detach "/Volumes/$ejectimage" -force -quiet
+  done
 
 if [[ -e "/Volumes/Shared Support" ]]; then
    sudo hdiutil detach "/Volumes/Shared Support" -force -quiet
